@@ -1,0 +1,16 @@
+{
+    "name": "kukrik/qcubed-filefinder",
+    "description": "QCubed v4 plugin for FileFinder",
+    "type": "qcubed-library",
+    "keywords": ["qcubed", "filefinder"],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0"
+    },
+    "autoload": {
+      "psr-4": {"QCubed\\Plugin\\": "src/"}
+    },
+    "extra": {
+        "examples": ["filefinder.php"]
+    }
+}
