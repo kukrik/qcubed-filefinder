@@ -1,14 +1,13 @@
 <?php
 require_once('qcubed.inc.php');
 
-require_once('../src/SlideWrapper.php');
-
 error_reporting(E_ALL); // Error engine - always ON!
 ini_set('display_errors', TRUE); // Error display - OFF in production env or real server
 ini_set('log_errors', TRUE); // Error logging
 
 use QCubed as Q;
 use QCubed\Action\ActionParams;
+use QCubed\Jqui\Event\SelectableStop;
 use QCubed\Project\Application;
 use QCubed\Bootstrap as Bs;
 use QCubed\Project\Control\ControlBase;
@@ -17,60 +16,42 @@ use QCubed\Query\QQ;
 
 class ExamplesForm extends Form
 {
-    protected $objSponsors;
+    protected $objFileFinder;
+    protected $objFileFinder1;
 
-    protected $intSonsorsId;
-    protected $objSponsor;
-
+    protected $btnPopup;
+    protected $btnPopup1;
+    protected $btnPopup2;
 
     protected function formCreate()
     {
-        $this->intSonsorsId = ListOfSliders::load(27);
-        $this->objSponsor = Sliders::load(27);
+        $this->objFileFinder = new Q\Plugin\FileFinder($this);
+        $this->objFileFinder->PopupUrl = "finder.php";
+        $this->objFileFinder->TargetPopupName = 'popup';
 
-        $this->objSponsors = new Q\Plugin\Slider($this);
-        $this->objSponsors->createNodeParams([$this, 'Sponsors_Draw']);
-        $this->objSponsors->setDataBinder('Sponsors_Bind');
-        $this->objSponsors->addCssClass('slider');
-        $this->objSponsors->UseWrapper = false;
-        $this->objSponsors->TempUrl = APP_UPLOADS_TEMP_URL . '/_files/thumbnail';
-        $this->objSponsors->IsLink = true;
-        $this->objSponsors->Width = $this->objSponsor->Width ?? null;
-        $this->objSponsors->Top = $this->objSponsor->Top ?? null;
-        $this->objSponsors->Auto = true;
-        $this->objSponsors->Pager = false;
-        $this->objSponsors->Speed = 2000;
-        $this->objSponsors->TouchEnabled = true;
-        $this->objSponsors->Controls = false;
-        $this->objSponsors->TickerHover = true;
-        $this->objSponsors->MinSlides = 4;
-        $this->objSponsors->MaxSlides = 5;
-        $this->objSponsors->MoveSlides = 1;
-        $this->objSponsors->SlideWidth = 200;
-        $this->objSponsors->SlideMargin = 50;
-    }
+        $this->objFileFinder1 = new Q\Plugin\FileFinder($this);
+        $this->objFileFinder1->PopupUrl = "second_popup.html";
+        $this->objFileFinder1->PopupWidth = '30%';
+        $this->objFileFinder1->PopupHeight = '30%';
+        $this->objFileFinder1->TargetPopupName = 'second_popup';
 
-    protected function Sponsors_Bind()
-    {
-        $this->objSponsors->DataSource = Sliders::QueryArray(
-            QQ::Equal(QQN::sliders()->GroupId, $this->intSonsorsId),
-            QQ::orderBy(QQN::sliders()->Order)
-        );
-    }
+        $this->btnPopup = new Bs\Button($this);
+        $this->btnPopup->Text = ' Add files';
+        $this->btnPopup->Glyph = 'fa fa-link';
+        $this->btnPopup->CssClass = 'btn btn-orange';
+        $this->btnPopup->setDataAttribute('popup', 'popup');
 
-    public function Sponsors_Draw(Sliders $objSlider)
-    {
-        $a['id'] = $objSlider->Id;
-        $a['group_id'] = $objSlider->GroupId;
-        $a['order'] = $objSlider->Order;
-        $a['title'] = $objSlider->Title;
-        $a['url'] = $objSlider->Url;
-        $a['path'] = $objSlider->Path;
-        $a['dimensions'] = $objSlider->Dimensions;
-        $a['width'] = $objSlider->Width;
-        $a['top'] = $objSlider->Top;
-        $a['status'] = $objSlider->Status;
-        return $a;
+        $this->btnPopup1 = new Bs\Button($this);
+        $this->btnPopup1->Text = ' Second popup';
+        $this->btnPopup1->CssClass = 'btn btn-primary';
+        $this->btnPopup1->setDataAttribute('popup', 'second_popup');
+
+        $this->btnPopup2 = new Bs\Button($this);
+        $this->btnPopup2->Glyph = 'fa fa-link';
+        $this->btnPopup2->Tip = true;
+        $this->btnPopup2->ToolTip = t('Add files');
+        $this->btnPopup2->CssClass = 'btn btn-icon btn-xs';
+        $this->btnPopup2->setDataAttribute('popup', 'popup');
     }
 }
 ExamplesForm::Run('ExamplesForm');

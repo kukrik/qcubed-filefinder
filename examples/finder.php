@@ -165,7 +165,7 @@ class SampleForm extends Form
         $this->objManager->TempPath = APP_UPLOADS_TEMP_DIR;
         $this->objManager->TempUrl = APP_UPLOADS_TEMP_URL;
         $this->objManager->DateTimeFormat = 'DD.MM.YYYY HH:mm:ss';
-        $this->objManager->LockedDocuments = true;
+        //$this->objManager->LockedDocuments = true;
         //$this->objManager->LockedImages = true;
         $this->objManager->UseWrapper = false;
         $this->objManager->addAction(new SelectableStop(), new Ajax ('selectable_stop'));
@@ -2661,29 +2661,36 @@ class SampleForm extends Form
         if ($this->arrSomeArray[0]["data-activities-locked"] == 1) {
             $this->dlgModal35->showDialogBox(); // Sorry, be cannot insert into a reserved file! ...
         } else {
+            foreach ($this->arrSomeArray as $arrSome) {
 
-            $fileId = $this->arrSomeArray[0]["data-id"];
-
-            if ($this->arrSomeArray[0]["data-id"]) {
-                $objFiles = Files::loadById($this->arrSomeArray[0]["data-id"]);
+                // Here, the "files" table needs to be updated to indicate that the selected image(s) are now locked.
+                // If this is not done, the file manager will not provide accurate information about whether
+                // the files are free or not. This is to prevent accidentally deleting files that are in use by others.
+                $objFiles = Files::loadById($arrSome["data-id"]);
                 $objFiles->setLockedFile($objFiles->getLockedFile() + 1);
-                $objFiles->save();
+                //$objFiles->save();
 
-                $this->objManager->refresh();
+
+                // First, you need to create your own table with your chosen name and define the necessary columns.
+                // However, here you must definitely add a column named "file_id", where you will pull the "id" value
+                // from the "files" table.
+                //
+                //This is necessary so that when you need to delete from your table, you can release the lock in
+                // the "files" table based on the "file_id". This ensures that FileHandler reflects the correct
+                // information to other users.
+
+                // $objSome = new Some();
+                // $objSome->setFileId($arrSome["data-id"]);
+                // $objSome->.... etc;
+                // $objSome->.... etc;
             }
 
-            $params = [
-                "id" => $this->arrSomeArray[0]["data-id"],
-                "name" => $this->arrSomeArray[0]["data-name"],
-                "path" => $this->arrSomeArray[0]["data-path"]
-            ];
-            $data = json_encode($params);
 
-            // Simulate user action of selecting a file to be returned to MediaFinder.
-            Application::executeJavaScript("
-            window.parent.opener.getDataParams('$data');
-            window.close();
-        ");
+
+            $this->objManager->refresh();
+
+
+            Application::executeJavaScript("window.close();");
         }
     }
 

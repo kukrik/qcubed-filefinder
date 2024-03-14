@@ -68,13 +68,13 @@ class FileManagerBase extends FileManagerBaseGen
    */
     protected function registerFiles() {
         $this->AddJavascriptFile("https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.9/dayjs.min.js");
-        $this->AddJavascriptFile(QCUBED_FILEMANAGER_ASSETS_URL . "/js/qcubed.filemanager.js");
-        $this->AddJavascriptFile(QCUBED_FILEMANAGER_ASSETS_URL . "/js/qcubed.uploadhandler.js");
-        $this->AddJavascriptFile(QCUBED_FILEMANAGER_ASSETS_URL . "/js/jquery.slimscroll.js");
-        $this->AddJavascriptFile(QCUBED_FILEMANAGER_ASSETS_URL . "/js/custom.js");
-        $this->addCssFile(QCUBED_FILEMANAGER_ASSETS_URL . "/css/qcubed.filemanager.css");
-        $this->addCssFile(QCUBED_FILEMANAGER_ASSETS_URL . "/css/qcubed.uploadhandler.css");
-        $this->addCssFile(QCUBED_FILEMANAGER_ASSETS_URL . "/css/custom.css");
+        $this->AddJavascriptFile(QCUBED_FILEFINDER_ASSETS_URL . "/js/qcubed.filemanager.js");
+        $this->AddJavascriptFile(QCUBED_FILEFINDER_ASSETS_URL . "/js/qcubed.uploadhandler.js");
+        $this->AddJavascriptFile(QCUBED_FILEFINDER_ASSETS_URL . "/js/jquery.slimscroll.js");
+        $this->AddJavascriptFile(QCUBED_FILEFINDER_ASSETS_URL . "/js/custom.js");
+        $this->addCssFile(QCUBED_FILEFINDER_ASSETS_URL . "/css/qcubed.filemanager.css");
+        $this->addCssFile(QCUBED_FILEFINDER_ASSETS_URL . "/css/qcubed.uploadhandler.css");
+        $this->addCssFile(QCUBED_FILEFINDER_ASSETS_URL . "/css/custom.css");
         $this->AddCssFile(QCUBED_BOOTSTRAP_CSS); // make sure they know
     }
 

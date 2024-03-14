@@ -3,9 +3,11 @@
 namespace QCubed\Plugin;
 
 require_once(dirname(dirname(__DIR__)) . '/i18n/i18n-lib.inc.php');
-use QCubed\Application\t;
 
 use QCubed as Q;
+use QCubed\Html;
+use QCubed\Bootstrap as Bs;
+use QCubed\Application\t;
 use QCubed\Css\TextAlignType;
 use QCubed\Exception\Caller;
 use QCubed\Exception\InvalidCast;
@@ -13,8 +15,6 @@ use QCubed\QString;
 use QCubed\Type;
 use QCubed\TagStyler;
 use QCubed\ModelConnector\Param as QModelConnectorParam;
-use QCubed\Html;
-use QCubed\Bootstrap as Bs;
 
 /**
  * Class Checkbox
@@ -29,7 +29,7 @@ use QCubed\Bootstrap as Bs;
  * @property string $WrapperStyle
  * @property string $InputClass $InputClass only sets or returns the CSS class of this input.
  *
- * @property-write boolean $Inline whether checkbox should be displayed inline or wrapped in a div
+ * @property boolean $Inline whether checkbox should be displayed inline or wrapped in a div
  * @package QCubed\Plugin
  */
 class Checkbox extends Q\Project\Control\ControlBase

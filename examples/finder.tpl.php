@@ -4,7 +4,7 @@
 
 <?php $this->RenderBegin(); ?>
 
-    <div class="dialog-content-wrapper">
+    <div class="page-content-wrapper">
         <div class="page-content">
             <div class="content-body">
                 <div class="files-heading">
@@ -23,6 +23,7 @@
                                 <?= _r($this->btnCopy); ?>
                                 <?= _r($this->btnDelete); ?>
                                 <?= _r($this->btnMove); ?>
+<!--                                --><?php //= _r($this->btnDownload); ?>
                             </div>
                             <div class="btn-group" role="group">
                                 <?= _r($this->btnImageListView); ?>
@@ -48,13 +49,13 @@
                     </div>
                 </div>
                 <div class="form-body">
-                    <div class="row"> <!-- BREADCRUMBS-->
+                    <div class="row">
                         <div class="col-md-9">
                             <div class="break-word">
                                 <div class="head">
                                     <?= _r($this->lblSearch); ?>
                                     <?= _r($this->objHomeLink); ?>
-                                </div>&nbsp;
+                                </div>&nbsp;&nbsp;&nbsp;
                                 <div class="breadcrumbs"></div>
                             </div>
                         </div>
@@ -64,10 +65,10 @@
                         <div class="col-md-9">
                             <div id="alert-wrapper"></div>
                             <div class="alert-multi-wrapper"></div>
-                            <div class="dialog-upload-wrapper hidden">
+                            <div class="upload-wrapper hidden">
                                 <?= _r($this->objUpload); ?>
                             </div>
-                            <div class="dialog-wrapper"> <!-- This element is required for the scrollpad control -->
+                            <div class="scroll-wrapper"> <!-- This element is required for the scrollpad control -->
                                 <div class="control-scrollpad">
                                     <?= _r($this->objManager); ?>
                                 </div>
