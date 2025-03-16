@@ -63,8 +63,10 @@ class FileUploadHandlerBase extends FileUploadHandlerBaseGen
      * @throws Caller
      */
     protected function registerFiles() {
-        $this->AddJavascriptFile(QCUBED_FILEFINDER_ASSETS_URL . "/js/qcubed.uploadhandler.js");
-        $this->addCssFile(QCUBED_FILEFINDER_ASSETS_URL . "/css/qcubed.uploadhandler.css");
+        $this->AddJavascriptFile(QCUBED_FILEUPLOAD_HANDLER_ASSETS_URL . "/js/qcubed.uploadhandler.js");
+        $this->addCssFile(QCUBED_FILEUPLOAD_HANDLER_ASSETS_URL . "/css/qcubed.uploadhandler.css");
+        $this->addCssFile(QCUBED_FILEUPLOAD_HANDLER_ASSETS_URL . "/css/custom-svg-icons.css");
+        $this->addCssFile(QCUBED_FILEUPLOAD_HANDLER_ASSETS_URL . "/css/vauu-table.css");
         $this->AddCssFile(QCUBED_BOOTSTRAP_CSS); // make sure they know
     }
 
@@ -85,7 +87,7 @@ class FileUploadHandlerBase extends FileUploadHandlerBaseGen
     protected function setup()
     {
         $this->strFullStoragePath = $this->strTempPath . '/' . $this->strStoragePath;
-        $strCreateDirs = ['/thumbnail', '/medium', '/large', '/zip'];
+        $strCreateDirs = ['/thumbnail', '/medium', '/large', '/zip', '/temp'];
 
         if (!is_dir($this->strRootPath)) {
             Folder::makeDirectory(QCUBED_PROJECT_DIR . '/assets/upload', 0777);

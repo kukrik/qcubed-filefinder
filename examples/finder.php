@@ -20,6 +20,7 @@ use QCubed\Action\ActionParams;
 use QCubed\Project\Application;
 use QCubed\Js;
 use QCubed\Html;
+use QCubed\QString;
 use QCubed\Query\QQ;
 use QCubed\Action\Ajax;
 use QCubed\Jqui\Event\SelectableStop;
@@ -29,44 +30,58 @@ use QCubed\Jqui\Event\SelectableStop;
  */
 class SampleForm extends Form
 {
-    protected $dlgModal1;
-    protected $dlgModal2;
-    protected $dlgModal3;
-    protected $dlgModal4;
-    protected $dlgModal5;
-    protected $dlgModal6;
-    protected $dlgModal7;
-    protected $dlgModal8;
-    protected $dlgModal9;
-    protected $dlgModal10;
-    protected $dlgModal11;
-    protected $dlgModal12;
-    protected $dlgModal13;
-    protected $dlgModal14;
-    protected $dlgModal15;
-    protected $dlgModal16;
-    protected $dlgModal17;
-    protected $dlgModal18;
-    protected $dlgModal19;
-    protected $dlgModal20;
-    protected $dlgModal21;
-    protected $dlgModal22;
-    protected $dlgModal23;
-    protected $dlgModal24;
-    protected $dlgModal25;
-    protected $dlgModal26;
-    protected $dlgModal27;
-    protected $dlgModal28;
-    protected $dlgModal29;
-    protected $dlgModal30;
-    protected $dlgModal31;
-    protected $dlgModal32;
-    protected $dlgModal33;
-    protected $dlgModal34;
-    protected $dlgModal35;
+    protected $dlgModal1; // Corrupted table "folders" in the database or folder "upload" in the file system! ...
+    protected $dlgModal2; // Sorry, files cannot be added to this reserved folder! ...
+    protected $dlgModal3; // Please choose only specific folder to upload files!
+    protected $dlgModal4; // Cannot select multiple folders to upload files!
+    protected $dlgModal5; // Please check if the destination is correct!
+    protected $dlgModal6; // Sorry, a new folder cannot be added to this reserved folder! ...
+    protected $dlgModal7; // Please select only one folder to create a new folder in!
+    protected $dlgModal8; // Please check if the destination is correct!
+    protected $dlgModal9; // Different comments are available depending on the user's behavior,
+    // associated with helper functions or helper classes related to this modal
+    protected $dlgModal10; // New folder created successfully!
+    protected $dlgModal11; // Failed to create new folder!
+    protected $dlgModal12; // Sorry, this reserved folder or file cannot be renamed! ...
+    protected $dlgModal13; // Please select a folder or file!
+    protected $dlgModal14; // Please select only one folder or file to rename!
+    protected $dlgModal15; // Different comments are available depending on the user's behavior,
+    // associated with helper functions or helper classes related to this modal
+    protected $dlgModal16; // Folder name changed successfully!
+    protected $dlgModal17; // Failed to rename folder!
+    protected $dlgModal18; // File name changed successfully!
+    protected $dlgModal19; // Failed to rename file!
+    protected $dlgModal20; // Please select a specific folder(s) or file(s)!
+    protected $dlgModal21; // It is not possible to copy the main directory!
+    protected $dlgModal22; // Different comments are available depending on the user's behavior,
+    // associated with helper functions or helper classes related to this modal
+    protected $dlgModal23; // Selected files and folders have been copied successfully!
+    protected $dlgModal24; // Error while copying items!
+    protected $dlgModal25; // Sorry, this reserved folder or file cannot be deleted!
+    protected $dlgModal26; // It is not possible to delete the main directory!
+    protected $dlgModal27; // Different comments are available depending on the user's behavior,
+    // associated with helper functions or helper classes related to this modal
+    protected $dlgModal28; // The selected files and folders have been successfully deleted!
+    protected $dlgModal29; // Error while deleting items!
+    protected $dlgModal30; // Error while deleting items!
+    protected $dlgModal31; // Sorry, this reserved folder or file cannot be moved! ...
+    protected $dlgModal32; // Different comments are available depending on the user's behavior,
+    // associated with helper functions or helper classes related to this modal
+    protected $dlgModal33; // The selected files and folders have been successfully moved!
+    protected $dlgModal34; // Error while moving items!
+    protected $dlgModal35; // Sorry, be cannot insert into a reserved file! ...
+
+    protected $dlgModal40; // Please select a image!
+    protected $dlgModal41; // Please select only one image to crop! ...
+    protected $dlgModal42; // Please select only one image to crop!
+    protected $dlgModal43; // Image cropping succeeded!
+    protected $dlgModal44; // Image cropping failed!
+    protected $dlgModal45; // The image is invalid for cropping!
+    protected $dlgModal46; // CSRF Token is invalid
 
     protected $objUpload;
     protected $objManager;
+    protected $dlgPopup;
     protected $objInfo;
     protected $lblSearch;
     protected $objHomeLink;
@@ -75,11 +90,13 @@ class SampleForm extends Form
     protected $btnAllStart;
     protected $btnAllCancel;
     protected $btnBack;
+    protected $btnDone;
 
     protected $btnUploadStart;
     protected $btnAddFolder;
     protected $btnRefresh;
     protected $btnRename;
+    protected $btnCrop;
     protected $btnCopy;
     protected $btnDelete;
     protected $btnMove;
@@ -135,6 +152,7 @@ class SampleForm extends Form
     protected $intStoredChecks = 0;
     protected $arrAllowed = array('jpg', 'jpeg', 'bmp', 'png', 'webp', 'gif');
     protected $tempFolders = ['thumbnail', 'medium', 'large'];
+    protected $arrCroppieTypes = array('jpg', 'jpeg', 'png');
 
     protected $blnMove = false;
 
@@ -145,14 +163,14 @@ class SampleForm extends Form
         $this->objUpload = new Q\Plugin\FileUploadHandler($this);
         $this->objUpload->Language = "et"; // Default en
         //$this->objUpload->ShowIcons = true; // Default false
-        //$this->objUpload->AcceptFileTypes = ['gif', 'jpg', 'jpeg', 'png', 'pdf', 'ppt', 'docx', 'mp4']; // Default null
+        // $this->objUpload->AcceptFileTypes = ['gif', 'jpg', 'jpeg', 'png', 'pdf', 'ppt', 'docx', 'mp4']; // Default null
         //$this->objUpload->MaxNumberOfFiles = 5; // Default null
         //$this->objUpload->MaxFileSize = 1024 * 1024 * 2; // 2 MB // Default null
         //$this->objUpload->MinFileSize = 500000; // 500 kb // Default null
         //$this->objUpload->ChunkUpload = false; // Default true
         $this->objUpload->MaxChunkSize = 1024 * 1024; // 10 MB // Default 5 MB
         //$this->objUpload->LimitConcurrentUploads = 5; // Default 2
-        $this->objUpload->Url = 'php/'; // Default null
+        $this->objUpload->Url = 'php/upload.php'; // Default 'php/upload.php'
         //$this->objUpload->PreviewMaxWidth = 120; // Default 80
         //$this->objUpload->PreviewMaxHeight = 120; // Default 80
         //$this->objUpload->WithCredentials = true; // Default false
@@ -165,10 +183,25 @@ class SampleForm extends Form
         $this->objManager->TempPath = APP_UPLOADS_TEMP_DIR;
         $this->objManager->TempUrl = APP_UPLOADS_TEMP_URL;
         $this->objManager->DateTimeFormat = 'DD.MM.YYYY HH:mm:ss';
-        //$this->objManager->LockedDocuments = true;
+        $this->objManager->LockedDocuments = true;
         //$this->objManager->LockedImages = true;
         $this->objManager->UseWrapper = false;
         $this->objManager->addAction(new SelectableStop(), new Ajax ('selectable_stop'));
+
+        $this->dlgPopup = new Q\Plugin\FilePopupCroppie($this);
+        $this->dlgPopup->Url = "php/crop_upload.php";
+        $this->dlgPopup->Language = "et";
+        $this->dlgPopup->TranslatePlaceholder = t("- Select a destination -");
+        $this->dlgPopup->Theme = "web-vauu";
+        $this->dlgPopup->HeaderTitle = t("Crop image");
+        $this->dlgPopup->SaveText = t("Crop and save");
+        $this->dlgPopup->CancelText = t("Cancel");
+
+        $this->dlgPopup->addAction(new Q\Plugin\Event\ChangeObject(), new \QCubed\Action\Ajax('objManagerRefresh_Click'));
+
+        if ($this->dlgPopup->Language) {
+            $this->dlgPopup->AddJavascriptFile(QCUBED_FILEMANAGER_ASSETS_URL . "/js/i18n/". $this->dlgPopup->Language . ".js");
+        }
 
         $this->objInfo = new Q\Plugin\FileInfo($this);
         $this->objInfo->RootUrl = APP_UPLOADS_URL;
@@ -271,6 +304,12 @@ class SampleForm extends Form
         $this->btnBack->addAction(new Q\Event\Click(), new Q\Action\Ajax('btnBack_Click'));
         $this->btnBack->addAction(new Q\Event\Click(), new Q\Action\Ajax('dataClearing_Click'));
 
+        $this->btnDone = new Bs\Button($this);
+        $this->btnDone->Text = t('Done');
+        $this->btnDone->CssClass = 'btn btn-success pull-right done';
+        $this->btnDone->UseWrapper = false;
+        $this->btnDone->addAction(new Q\Event\Click(), new Q\Action\Ajax('btnDone_Click'));
+
         $this->btnUploadStart = new Q\Plugin\Button($this);
         $this->btnUploadStart->Text = t(' Upload');
         $this->btnUploadStart->Glyph = 'fa fa-upload';
@@ -300,6 +339,14 @@ class SampleForm extends Form
         $this->btnRename->CausesValidation = false;
         $this->btnRename->UseWrapper = false;
         $this->btnRename->addAction(new Q\Event\Click(), new Q\Action\Ajax('btnRename_Click'));
+
+        $this->btnCrop = new Q\Plugin\Button($this);
+        $this->btnCrop->Text = t(' Crop');
+        $this->btnCrop->Glyph = 'fa fa-crop';
+        $this->btnCrop->CssClass = 'btn btn-darkblue';
+        $this->btnCrop->CausesValidation = false;
+        $this->btnCrop->UseWrapper = false;
+        $this->btnCrop->addAction(new Q\Event\Click(), new Q\Action\Ajax('btnCrop_Click'));
 
         $this->btnCopy = new Q\Plugin\Button($this);
         $this->btnCopy->Text = t(' Copy');
@@ -642,6 +689,56 @@ class SampleForm extends Form
                                     <p style="margin-top: 15px;">Select and copy this file to another location, then insert!</p>');
         $this->dlgModal35->HeaderClasses = 'btn-darkblue';
         $this->dlgModal35->addCloseButton(t("I close the window"));
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        // CROP
+
+        $this->dlgModal40 = new Bs\Modal($this);
+        $this->dlgModal40->Title = t('Tip');
+        $this->dlgModal40->Text = t('<p style="margin-top: 15px;">Please select a image!</p>');
+        $this->dlgModal40->HeaderClasses = 'btn-darkblue';
+        $this->dlgModal40->addCloseButton(t("I close the window"));
+
+        $this->dlgModal41 = new Bs\Modal($this);
+        $this->dlgModal41->Title = t('Tip');
+        $this->dlgModal41->Text = t('<p style="margin-top: 15px;">Please select only one image to crop!</p>
+                                    <p style="margin-top: 15px;">Allowed file types: jpg, jpeg, png.</p>');
+        $this->dlgModal41->HeaderClasses = 'btn-darkblue';
+        $this->dlgModal41->addCloseButton(t("I close the window"));
+
+        $this->dlgModal42 = new Bs\Modal($this);
+        $this->dlgModal42->Title = t('Tip');
+        $this->dlgModal42->Text = t('<p style="margin-top: 15px;">Please select only one image to crop!</p>');
+        $this->dlgModal42->HeaderClasses = 'btn-darkblue';
+        $this->dlgModal42->addCloseButton(t("I close the window"));
+
+        $this->dlgModal43 = new Bs\Modal($this);
+        $this->dlgModal43->Text = t('<p style="line-height: 25px; margin-bottom: 2px;">Image cropping succeeded!</p>');
+        $this->dlgModal43->Title = t("Success");
+        $this->dlgModal43->HeaderClasses = 'btn-success';
+        $this->dlgModal43->addCloseButton(t("I close the window"));
+
+        $this->dlgModal44 = new Bs\Modal($this);
+        $this->dlgModal44->Text = t('<p style="line-height: 25px; margin-bottom: 2px;">Image cropping failed!</p>');
+        $this->dlgModal44->Title = t("Warning");
+        $this->dlgModal44->HeaderClasses = 'btn-danger';
+        $this->dlgModal44->addCloseButton(t("I understand"));
+
+        $this->dlgModal45 = new Bs\Modal($this);
+        $this->dlgModal45->Text = t('<p style="margin-top: 15px;">The image is invalid for cropping!</p>
+                                    <p style="margin-top: 15px;">It is recommended to delete this image and upload it again!</p>');
+        $this->dlgModal45->Title = t("Warning");
+        $this->dlgModal45->HeaderClasses = 'btn-danger';
+        $this->dlgModal45->addCloseButton(t("I understand"));
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        // CSRF PROTECTION
+
+        $this->dlgModal46 = new Bs\Modal($this);
+        $this->dlgModal46->Text = t('<p style="margin-top: 15px;">CSRF Token is invalid! The request was aborted.</p>');
+        $this->dlgModal46->Title = t("Warning");
+        $this->dlgModal46->HeaderClasses = 'btn-danger';
+        $this->dlgModal46->addCloseButton(t("I understand"));
     }
 
     public function portedCheckDestination()
@@ -957,19 +1054,28 @@ class SampleForm extends Form
     {
         $script = "
             $('.fileupload-buttonbar').removeClass('hidden');
-            $('.dialog-upload-wrapper').removeClass('hidden');
+            $('.upload-wrapper').removeClass('hidden');
+            $('.fileupload-donebar').addClass('hidden');
             $('body').removeClass('no-scroll');
+            $('.head').addClass('hidden');
             $('.files-heading').addClass('hidden');
             $('.dialog-wrapper').addClass('hidden');
+            $('.alert').remove();
         ";
 
         Application::executeJavaScript($script);
 
-        $this->dlgModal5->hideDialogBox(); // Palun kontrolli, kas sihtkoht on õige!
+        $this->dlgModal5->hideDialogBox(); // Please check if the destination is correct!
     }
 
     public function confirmParent_Click(ActionParams $params)
     {
+        if (!Application::verifyCsrfToken()) {
+            $this->dlgModal46->showDialogBox();
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            return;
+        }
+
         $path = $this->objManager->RootPath . $this->strDataPath;
 
         $folderId = isset($_SESSION['folderId']) ? $_SESSION['folderId'] : null;
@@ -990,14 +1096,33 @@ class SampleForm extends Form
     {
         $script = "
             $('.fileupload-buttonbar').addClass('hidden');
-            $('.dialog-upload-wrapper').addClass('hidden');
+            $('.upload-wrapper').addClass('hidden');
             $('body').addClass('no-scroll');
+            $('.head').removeClass('hidden');
             $('.files-heading').removeClass('hidden');
             $('.dialog-wrapper').removeClass('hidden');
             $('.alert').remove();
         ";
 
         Application::executeJavaScript($script);
+
+        $this->objManager->refresh();
+    }
+
+    protected function btnDone_Click(ActionParams $params)
+    {
+        unset($_SESSION['folderId']);
+        unset($_SESSION['filePath']);
+
+        Application::executeJavaScript("
+            $('.fileupload-buttonbar').addClass('hidden');
+            $('.upload-wrapper').addClass('hidden');
+            $('body').addClass('no-scroll');
+            $('.head').removeClass('hidden');
+            $('.files-heading').removeClass('hidden');
+            $('.dialog-wrapper').removeClass('hidden');
+            $('.alert').remove();
+        ");
 
         $this->objManager->refresh();
     }
@@ -1046,6 +1171,12 @@ class SampleForm extends Form
 
     public function startAddFolderProcess_Click(ActionParams $params)
     {
+        if (!Application::verifyCsrfToken()) {
+            $this->dlgModal46->showDialogBox();
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            return;
+        }
+
         $_SESSION['fileId'] = $this->intDataId;
         $_SESSION['filePath'] = $this->strDataPath;
 
@@ -1078,6 +1209,12 @@ class SampleForm extends Form
 
     public function addFolderName_Click(ActionParams $params)
     {
+        if (!Application::verifyCsrfToken()) {
+            $this->dlgModal46->showDialogBox();
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            return;
+        }
+
         $path = $this->objManager->RootPath . $_SESSION['filePath'];
         $scanned_directory = array_diff(scandir($path), array('..', '.'));
 
@@ -1119,7 +1256,7 @@ class SampleForm extends Form
     {
         clearstatcache();
 
-        $fullPath = $path . "/" . trim($text);
+        $fullPath = $path . "/" . trim(QString::sanitizeForUrl($text));
         $relativePath = $this->objManager->getRelativePath($fullPath);
 
         Folder::makeDirectory($fullPath, 0777);
@@ -1171,7 +1308,7 @@ class SampleForm extends Form
         clearstatcache();
 
         if ($this->dataScan() !== $this->scan($this->objManager->RootPath)) {
-            $this->dlgModal1->showDialogBox(); // Rikutud tabel "folders" andmebaasis  või kausta "upload" failisüsteem! ...
+            $this->dlgModal1->showDialogBox(); // Corrupted table "folders" in the database or directory "upload" in the file system! ...
             return;
         }
 
@@ -1193,11 +1330,13 @@ class SampleForm extends Form
         }
 
         $this->intDataId = $this->arrSomeArray[0]["data-id"];
+        $this->strDataName = $this->arrSomeArray[0]["data-name"];
         $this->strDataPath = $this->arrSomeArray[0]["data-path"];
         $this->strDataType = $this->arrSomeArray[0]["data-item-type"];
         $this->intDataLocked = $this->arrSomeArray[0]["data-locked"];
 
-        $this->txtRename->Text = pathinfo($this->objManager->RootPath . $this->strDataPath, PATHINFO_FILENAME);
+        $this->txtRename->Text = $this->strDataName;
+
         $this->dlgModal15->showDialogBox();
 
         if ($this->txtRename->Text == "upload") {
@@ -1243,6 +1382,12 @@ class SampleForm extends Form
 
     public function renameName_Click(ActionParams $params)
     {
+        if (!Application::verifyCsrfToken()) {
+            $this->dlgModal46->showDialogBox();
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            return;
+        }
+
         $path = $this->objManager->RootPath . $this->strDataPath;
 
         // Check conditions preventing renaming
@@ -1292,14 +1437,24 @@ class SampleForm extends Form
 
         $path = $this->objManager->RootPath . $this->strDataPath;
         $parts = pathinfo($path);
+        $sanitizedName = QString::sanitizeForUrl(trim($this->txtRename->Text));
+        $this->strNewPath = $parts['dirname'] . '/' . $sanitizedName;
+
         $objFolders = Folders::loadAll();
         $objFiles = Files::loadAll();
 
         // If the folder does not contain subfolders and files, renaming the folder is easy. If this folder contains
         // subfolders and files, all names and paths in descending order must be renamed according to the same logic
-        if ($this->intDataLocked === 0) {
+        if ($this->intDataLocked == 0) {
+            // If there are no subfolders or files in a folder, renaming is easy.
             if (is_dir($path)) {
-                $this->strNewPath = $parts['dirname'] . '/' . trim($this->txtRename->Text);
+                // We will immediately update the database accordingly.
+                $objFolder = Folders::loadById($this->intDataId);
+                $objFolder->Name = trim($this->txtRename->Text);
+                $objFolder->Path = $this->objManager->getRelativePath($this->strNewPath);
+                $objFolder->Mtime = time();
+                $objFolder->save();
+
                 $this->objManager->rename($path, $this->strNewPath);
             }
 
@@ -1310,23 +1465,23 @@ class SampleForm extends Form
                 }
             }
 
-            $objFolder = Folders::loadById($this->intDataId);
-            $objFolder->Name = basename($this->strNewPath);
-            $objFolder->Path = $this->objManager->getRelativePath($this->strNewPath);
-            $objFolder->Mtime = time();
-            $objFolder->save();
-
             $this->handleResult();
-
         } else {
-
+            // If there are subfolders and files in the folder, they must also be renamed.
             $this->tempItems = $this->fullScanIds($this->intDataId);
             $arrUpdatehash = [];
+
+            if ($this->intDataId) {
+                $obj = Folders::loadById($this->intDataId);
+                $obj->Name = trim($this->txtRename->Text);
+                $obj->Mtime = time();
+                $obj->save();
+            }
 
             foreach ($objFolders as $objFolder) {
                 foreach ($this->tempItems as $temp) {
                     if ($temp == $objFolder->getId()) {
-                        $newPath = str_replace(basename($this->strDataPath), trim($this->txtRename->Text), $objFolder->Path);
+                        $newPath = str_replace(basename($this->strDataPath), $sanitizedName, $objFolder->Path);
                         $this->strNewPath = $this->objManager->RootPath . $newPath;
 
                         $arrUpdatehash[] = $newPath;
@@ -1344,7 +1499,6 @@ class SampleForm extends Form
 
                         if ($this->intDataLocked !== 0) {
                             $obj = Folders::loadById($objFolder->getId());
-                            $obj->Name = basename($this->strNewPath);
                             $obj->Path = $this->objManager->getRelativePath($this->strNewPath);
                             $obj->Mtime = time();
                             $obj->save();
@@ -1357,7 +1511,7 @@ class SampleForm extends Form
             foreach ($objFiles as $objFile) {
                 foreach ($this->tempItems as $temp) {
                     if ($temp == $objFile->getFolderId()) {
-                        $newPath = str_replace(basename($this->strDataPath), trim($this->txtRename->Text), $objFile->Path);
+                        $newPath = str_replace(basename($this->strDataPath), $sanitizedName, $objFile->Path);
                         $this->strNewPath = $this->objManager->RootPath . $newPath;
 
                         if (is_file($this->objManager->RootPath . $objFile->getPath())) {
@@ -1438,10 +1592,94 @@ class SampleForm extends Form
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
+    // CROP
+
+    public function btnCrop_Click(ActionParams $params)
+    {
+        if (!Application::verifyCsrfToken()) {
+            $this->dlgModal46->showDialogBox();
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            return;
+        }
+
+        clearstatcache();
+
+        $this->strDataPath = $this->arrSomeArray[0]["data-path"];
+        $fullFilePath = $this->objManager->RootUrl . $this->strDataPath;
+
+        if ($this->dataScan() !== $this->scan($this->objManager->RootPath)) {
+            $this->dlgModal1->showDialogBox(); // Corrupted table "folders" in the database or directory "upload" in the file system! ...
+            return;
+        }
+
+        if (!$this->arrSomeArray) {
+            $this->dlgModal40->showDialogBox(); // Please select a image!
+            return;
+        }
+
+        if ($this->arrSomeArray[0]['data-item-type'] == 'file' &&
+            !in_array(strtolower($this->arrSomeArray[0]['data-extension']), $this->arrCroppieTypes)) {
+            $this->dlgModal41->showDialogBox(); // Please select only one image to crop! Allowed file types: jpg, jpeg, png.
+            return;
+        }
+
+        if (count($this->arrSomeArray) !== 1 || $this->arrSomeArray[0]['data-item-type'] !== 'file') {
+            $this->dlgModal42->showDialogBox(); // Please select only one image to crop!
+            return;
+        }
+
+        // Check if the file exists and its size is 0 bytes
+        if (file_exists($fullFilePath) && filesize($fullFilePath) === 0) {
+            $this->dlgModal45->showDialogBox(); // The image is invalid for cropping! It is recommended to delete this image and upload it again!
+            return;
+        }
+
+        $scanFolders = $this->scanForSelect();
+        $folderData = [];
+
+        foreach ($scanFolders as $folder) {
+            if ($folder['activities_locked'] !== 1) {
+                $level = $folder['depth'];
+                if ($this->checkString($folder['path'])) {
+                    $level = 0;
+                }
+                $folderData[] = [
+                    'id' => $folder['path'],
+                    'text' => $folder['name'],
+                    'level' => $level,
+                    'folderId' => $folder['id']
+                ];
+            }
+        }
+
+        $this->dlgPopup->showDialogBox();
+
+        $this->dlgPopup->SelectedImage = $fullFilePath;
+        $this->dlgPopup->Data = $folderData;
+    }
+
+    public function objManagerRefresh_Click(ActionParams $params)
+    {
+        if (file_exists($this->objManager->RootPath . $this->dlgPopup->FinalPath)) {
+            $this->dlgModal43->showDialogBox(); // Image cropping succeeded!
+        } else {
+            $this->dlgModal44->showDialogBox(); // Image cropping failed!
+        }
+
+        $this->objManager->refresh();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
     // COPY
 
     public function btnCopy_Click(ActionParams $params)
     {
+        if (!Application::verifyCsrfToken()) {
+            $this->dlgModal46->showDialogBox();
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            return;
+        }
+
         $objFolders = Folders::loadAll();
         $objFiles = Files::loadAll();
 
@@ -1702,6 +1940,12 @@ class SampleForm extends Form
 
     public function btnDelete_Click(ActionParams $params)
     {
+        if (!Application::verifyCsrfToken()) {
+            $this->dlgModal46->showDialogBox();
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            return;
+        }
+
         clearstatcache();
 
         if ($this->dataScan() !== $this->scan($this->objManager->RootPath)) {
@@ -1840,7 +2084,7 @@ class SampleForm extends Form
                     }
 
                     // Here have to check whether the files are locked
-                    if ($objFile->getLockedFile() == 1) {
+                    if ($objFile->getLockedFile() > 0) {
                         $this->objLockedFiles++;
                     }
                 }
@@ -1926,6 +2170,12 @@ class SampleForm extends Form
 
     public function btnMove_Click(ActionParams $params)
     {
+        if (!Application::verifyCsrfToken()) {
+            $this->dlgModal46->showDialogBox();
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            return;
+        }
+
         $objFolders = Folders::loadAll();
         $objFiles = Files::loadAll();
 
@@ -2375,6 +2625,17 @@ class SampleForm extends Form
         return $folderData;
     }
 
+    protected function checkString($str) {
+        // Remove leading and trailing spaces
+        $str = trim($str);
+
+        // Split the string based on the slashes
+        $parts = explode('/', $str);
+
+        // We check if there are more parts after the first element
+        return count($parts) <= 2 && empty($parts[1]);
+    }
+
     /**
      * Print a string with indentation based on depth.
      *
@@ -2685,10 +2946,7 @@ class SampleForm extends Form
                 // $objSome->.... etc;
             }
 
-
-
             $this->objManager->refresh();
-
 
             Application::executeJavaScript("window.close();");
         }

@@ -1,6 +1,7 @@
 <?php
 
 require_once('../qcubed.inc.php');
+require_once ('../../src/FileHandler.php');
 
 use QCubed\Plugin\FileHandler;
 use QCubed\Project\Application;
@@ -12,7 +13,7 @@ $options = array(
     //'TempFolders' =>  ['thumbnail', 'medium', 'large'], // Please read the UploadHandler description and manual
     //'ResizeDimensions' => [320, 480, 1500], // Please read the UploadHandler description and manual
     //'DestinationPath' => null, // Please read the UploadHandler description and manual
-    //'AcceptFileTypes' => ['gif', 'jpg', 'jpeg', 'png', 'pdf', 'ppt', 'docx', 'xlsx', 'txt', 'mp4'], // Default null
+    'AcceptFileTypes' => ['gif', 'jpg', 'jpeg', 'png', 'pdf', 'ppt', 'docx', 'xlsx', 'txt', 'mp4', 'mov'], // Default null
     'DestinationPath' => !empty($_SESSION["filePath"]) ? $_SESSION["filePath"] : null, // Default null
     //'MaxFileSize' => 1024 * 1024 * 2 // 2 MB // Default null
     //'UploadExists' => 'overwrite', // increment || overwrite Default 'increment'
@@ -37,6 +38,8 @@ class CustomFileUploadHandler extends FileHandler
             $obj->setSize($this->options['FileSize']);
             $obj->setMtime(filemtime($this->options['FileName']));
             $obj->setDimensions($this->getDimensions($this->options['FileName']));
+            $obj->setWidth($this->getImageWidth($this->options['FileName']));
+            $obj->setHeight($this->getImageHeight($this->options['FileName']));
             $obj->save(true);
         }
 
@@ -56,7 +59,49 @@ class CustomFileUploadHandler extends FileHandler
             $file->save();
         }
     }
+
+    /**
+     * Get width of an image
+     * @param string $path
+     * @return mixed|string
+     */
+    public static function getImageWidth($path)
+    {
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $ImageSize = getimagesize($path);
+
+        if (in_array($ext, self::getImageExtensions())) {
+            $width = (isset($ImageSize[0]) ? $ImageSize[0] : '0');
+            return $width;
+        }
+    }
+
+    /**
+     * Get height of an image
+     * @param string $path
+     * @return mixed|string
+     */
+    public static function getImageHeight($path)
+    {
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $ImageSize = getimagesize($path);
+
+        if (in_array($ext, self::getImageExtensions())) {
+            $height = (isset($ImageSize[1]) ? $ImageSize[1] : '0');
+            return $height;
+        }
+    }
+
+    /**
+     * Get image files extensions
+     * @return array
+     */
+    public static function getImageExtensions()
+    {
+        return array('jpg', 'jpeg', 'bmp', 'png', 'webp', 'gif');
+    }
 }
+
 
 $objHandler = new CustomFileUploadHandler($options);
 

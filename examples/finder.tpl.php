@@ -4,7 +4,7 @@
 
 <?php $this->RenderBegin(); ?>
 
-    <div class="page-content-wrapper">
+    <div class="dialog-content-wrapper">
         <div class="page-content">
             <div class="content-body">
                 <div class="files-heading">
@@ -19,11 +19,10 @@
                             </div>
                             <div class="btn-group" role="group">
                                 <?= _r($this->btnRename); ?>
-                                <?php // _r($this->btnChange); ?>
+                                <?= _r($this->btnCrop); ?>
                                 <?= _r($this->btnCopy); ?>
                                 <?= _r($this->btnDelete); ?>
                                 <?= _r($this->btnMove); ?>
-<!--                                --><?php //= _r($this->btnDownload); ?>
                             </div>
                             <div class="btn-group" role="group">
                                 <?= _r($this->btnImageListView); ?>
@@ -49,10 +48,10 @@
                     </div>
                 </div>
                 <div class="form-body">
-                    <div class="row">
+                    <div class="row"> <!-- BREADCRUMBS-->
                         <div class="col-md-9">
-                            <div class="break-word">
-                                <div class="head">
+                            <div class="head">
+                                <div class="break-word">
                                     <?= _r($this->lblSearch); ?>
                                     <?= _r($this->objHomeLink); ?>
                                 </div>&nbsp;&nbsp;&nbsp;
@@ -63,12 +62,15 @@
                     </div>
                     <div class="row equal">
                         <div class="col-md-9">
-                            <div id="alert-wrapper"></div>
-                            <div class="alert-multi-wrapper"></div>
                             <div class="upload-wrapper hidden">
+                                <div id="alert-wrapper"></div>
+                                <div class="alert-multi-wrapper"></div>
                                 <?= _r($this->objUpload); ?>
+                                <div class="fileupload-donebar hidden">
+                                    <?= _r($this->btnDone); ?>
+                                </div>
                             </div>
-                            <div class="scroll-wrapper"> <!-- This element is required for the scrollpad control -->
+                            <div class="dialog-wrapper"> <!-- This element is required for the scrollpad control -->
                                 <div class="control-scrollpad">
                                     <?= _r($this->objManager); ?>
                                 </div>
